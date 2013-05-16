@@ -1,0 +1,46 @@
+from SimpleCV import JpegStreamCamera
+from SimpleCV import Color, Display, RunningSegmentation, Circle
+import os, time
+import cv
+
+cam = JpegStreamCamera("http://172.17.201.138:8080/videofeed")
+frame = cam.getImage()
+display = Display((frame.width, frame.height))
+
+diff_seg = RunningSegmentation()
+diff_seg.addImage(frame)
+
+default_area = 1000
+dots = []
+
+while display.isNotDone(): 
+    frame = cam.getImage().flipVertical().flipHorizontal()
+    diff_seg.addImage(frame)
+    diff_image = diff_seg.getSegmentedImage(False)
+
+    if diff_image is not None:
+        blobs = diff_image.dilate(3).findBlobs()
+        if blobs:
+            if not blobs.overlaps(Circle(5, 100, 400, 30)):
+                frame.dl().circle((100, 400), 30, Color.WHITE, filled=True, alpha=100)
+            else:
+                frame.dl().circle((100, 400), 30, Color.RED, filled=True, alpha=200)
+        else:
+            frame.dl().circle((100, 400), 30, Color.WHITE, filled=True, alpha=100)
+
+        blobs = None if not blobs else blobs.filter([b.mArea > default_area for b in blobs])
+        if blobs:
+            frame.dl().polygon(blobs[-1].mConvexHull, color=Color.RED, width=3)
+            #frame.dl().circle((blobs[0].x, blobs[0].y), len(dots) + 6, Color.WHITE, filled=True)
+            #for i, dot in enumerate(dots):
+            #    frame.dl().circle((dot.x, dot.y), i + 5, Color.WHITE, filled=True)
+            #dots.append(blobs[-1])
+            defects = cv.ConvexityDefects(blobs[-1].contour(), blobs[-1].mConvexHull)
+        else:
+            dots = []
+    else:
+        frame.dl().circle((100, 400), 30, Color.WHITE, filled=True, alpha=100)
+    frame.save(display)
+    time.sleep(0.1)
+    
+    
