@@ -4,7 +4,7 @@ def foo(image):
     return image.meanColor()
 
 def camshift():
-    cam = JpegStreamCamera("http://172.17.200.229:8080/videofeed")
+    cam = JpegStreamCamera("http://192.168.1.100:8080/videofeed")
     img = cam.getImage()
     d = Display(img.size())
     bb1 = getBBFromUser(cam,d)
