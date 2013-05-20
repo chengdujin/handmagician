@@ -1,16 +1,25 @@
-from SimpleCV import Image, Blob, Color, Display
+from SimpleCV import *
 
-img = Image('hand_pic.JPG')
-dp = Display((img.width, img.height))
-img = img.hueDistance(Color.RED).binarize(50)
+cam = JpegStreamCamera('http://192.168.1.100:8080/videofeed')
 
-while dp.isNotDone():
+while True:
+    img = cam.getImage().threshold(128)
     blobs = img.findBlobs()
     blob = blobs[-1]
-    #lines, farpoints = blob.getConvexityDefects()
-    #for line in lines:
-        #line.draw(color=Color.RED, width=2)
-    #for p in farpoints:
-        #p.draw(color=Color.RED, width=3)
-    img.dl().polygon(blob.mConvexHull, color=Color.RED, width=3)
+    lines, farpoints = blob.getConvexityDefects()
+    #lines.draw(color=Color.RED, width=2)
+    farpoints.draw(color=Color.RED, width=3)
+    #img.dl().polygon(blob.mConvexHull, color=Color.RED, width=3)
     img.show()
+'''
+
+img = Image('lenna')
+img = img.threshold(128)
+blobs = img.findBlobs()
+blob = blobs[-1]
+#lines, farpoints = blob.getConvexityDefects()
+#lines.draw()
+#farpoints.draw(color=Color.RED, width=-1)
+img.dl().polygon(blob.mConvexHull, color=Color.RED, width=3)
+img.show()
+'''
