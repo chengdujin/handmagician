@@ -2,7 +2,7 @@ from SimpleCV import JpegStreamCamera
 from SimpleCV import Color, Display, RunningSegmentation, Circle
 import os, time
 
-cam = JpegStreamCamera("http://192.168.1.100:8080/videofeed")
+cam = JpegStreamCamera("http://172.17.200.104:8080/videofeed")
 frame = cam.getImage()
 display = Display((frame.width, frame.height))
 
