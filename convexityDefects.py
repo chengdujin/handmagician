@@ -1,6 +1,7 @@
 from SimpleCV import *
 
-cam = JpegStreamCamera('http://192.168.1.100:8080/videofeed')
+#cam = JpegStreamCamera('http://192.168.1.100:8080/videofeed')
+cam = JpegStreamCamera('http://172.17.200.202:8080/videofeed')
 
 while True:
     img = cam.getImage().threshold(128)
