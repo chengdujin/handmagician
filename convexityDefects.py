@@ -3,8 +3,8 @@ import time
 import cv
 from math import atan2, degrees
 
-cam = JpegStreamCamera('http://192.168.0.165:8080/videofeed')
-#cam = JpegStreamCamera('http://192.168.1.100:8080/videofeed')
+#cam = JpegStreamCamera('http://192.168.0.165:8080/videofeed')
+cam = JpegStreamCamera('http://192.168.1.102:8080/videofeed')
 #cam = JpegStreamCamera('http://172.17.200.200:8080/videofeed')
 '''
 while True:

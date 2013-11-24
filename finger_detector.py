@@ -1,7 +1,7 @@
 from SimpleCV import *
 import os, time
 
-cam = JpegStreamCamera("http://192.168.1.100:8080/videofeed")
+cam = JpegStreamCamera("http://192.168.1.102:8080/videofeed")
 frame = cam.getImage()
 running = RunningSegmentation(thresh=50)
 found = False
@@ -10,19 +10,29 @@ ts = []
 found_image = None
 
 while True: 
-    original = cam.getImage().flipHorizontal()
-    hue = original.hueDistance(Color.RED, minsaturation=150).invert()
-    hue_blobs = hue.findBlobs(minsize=1000)
-    '''if hue_blobs:
-        hue.dl().polygon(hue_blobs[-1].mConvexHull, color=Color.YELLOW, width=3)
-        if hue_blobs[-1].area() > 2000:
-            try:
-                lines, points = hue_blobs[-1].getConvexityDefects()
-                points.draw(color=Color.RED, width=2)
-            except Exception as e:
-                print e
+    img = cam.getImage().hueDistance(Color.RED, minsaturation=80).flipVertical().invert()
+    blobs = img.findBlobs()
+    if blobs:
+        blob = blobs[-1]
+        #lines, farpoints = blob.getConvexityDefects()
+        #lines.draw(color=Color.RED, width=2)
+        #farpoints.draw(color=Color.RED, width=3)
+        img.dl().polygon(blob.mConvexHull, color=Color.RED, width=3)
+    img.show()
+    #original = cam.getImage().flipHorizontal()
+    #hue = original.hueDistance(Color.RED, minsaturation=150).invert()
+    #hue_blobs = hue.findBlobs(minsize=1000)
+    #if hue_blobs:
+        #hue.dl().polygon(hue_blobs[-1].mConvexHull, color=Color.YELLOW, width=3)
+        #if hue_blobs[-1].area() > 2000:
+        #    try:
+        #        print hue_blobs[-1]
+        #        lines, points = hue_blobs[-1].getConvexityDefects()
+        #        points.draw(color=Color.RED, width=2)
+        #    except Exception as e:
+        #        print e
+    """
 
-    '''
     if not found:
         running.addImage(hue)
         motion = running.getSegmentedImage(False)
@@ -48,4 +58,4 @@ while True:
     else:
         ts = hue.track('camshift', ts, found_image, bb)
         ts.drawBB()
-    hue.show()
+    """
