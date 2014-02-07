@@ -3,7 +3,7 @@ import handwritingIO
 from SimpleCV import *
 import time
 
-cam = JpegStreamCamera('http://192.168.1.102:8080/videofeed')
+cam = JpegStreamCamera('http://172.17.200.241:8080/videofeed')
 coordinates = []
 prev_point = None
 diff = -1
@@ -16,20 +16,20 @@ while True:
     org.drawLine((50, 70), (400, 70), color=Color.BLUE, thickness=2)
     #img.drawLine(point, blob.centroid(), color=Color.GREEN, thickness=2)
     if org:
-        #img = org.threshold(100).invert() # at home/office
-        img = org.hueDistance(Color.RED).threshold(60).invert()
+        img = org.hueDistance(Color.RED).threshold(70).invert()
+        #img = org.hueDistance(Color.RED).threshold(60).invert()
         blobs = img.findBlobs()
         if blobs:
             blob = blobs[-1]
-            if blob.area() > 17000:
+            if blob.area() > 17000 and blob.area() < 50000:
                 points = blob.contour()
                 point = max(points, key=lambda x:-x[1])
-                org.drawCircle(point, 7, color=Color.YELLOW, thickness=-1)
+                img.drawCircle(point, 7, color=Color.YELLOW, thickness=-1)
                 coordinates.append(blob.centroid())
                 if prev_point:
                     diff = math.hypot(point[0] - prev_point[0], point[1] - prev_point[1])
                 prev_point = point
-        org.show() 
+        img.show() 
 
     #print diff, prev_diff
     if diff == prev_diff:
